@@ -75,7 +75,6 @@ class PhoProcessor
         $error = $zip->open($this->unpacked . DIRECTORY_SEPARATOR . $this->file . '.zip');
 
         if ($error == true) {
-            system("unzip ".$_SERVER['DOCUMENT_ROOT'].'/'.$this->unpacked . DIRECTORY_SEPARATOR . $this->file.'.zip');
             $error = $zip->extractTo($_SERVER['DOCUMENT_ROOT'].'/'.$this->unpacked . DIRECTORY_SEPARATOR . $this->file);
             if ($error != true)
             {
