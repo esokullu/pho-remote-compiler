@@ -78,7 +78,6 @@ class PhoProcessor
             $error = $zip->extractTo($_SERVER['DOCUMENT_ROOT'].'/'.$this->unpacked . DIRECTORY_SEPARATOR . $this->file);
             if ($error != true)
             {
-                var_dump($error);
                 $this->sendError('Can not open extract files');
             }
 
