@@ -101,7 +101,7 @@ class PhoProcessor
         */
         $ret = 0;
         $output = [];
-        exec("php /opt/pho-cli/bin/pho.php ".
+        exec("php /opt/pho-cli/bin/pho.php build ".
              escapeshellarg($this->unpacked . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR).
              " ".
              escapeshellarg($this->compiled . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR).
