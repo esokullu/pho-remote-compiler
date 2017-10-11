@@ -108,7 +108,7 @@ class PhoProcessor
              " pgql",
              $output,
              $ret
-           )
+           );
         return $ret === 0;
     }
 
