@@ -37,10 +37,11 @@ class PhoProcessor
 
     public function checkRequest(): Response
     {
-        if ($this->request->getHeaderLine('Host') != 'pho-cli') {
+/*    
+    if ($this->request->getHeaderLine('Host') != 'pho-cli') {
             $this->sendError('Wrong server');
         }
-
+*/
         if (strpos('application/zip', $this->request->getHeaderLine('Accept')) === -1
             || strpos('application/json', $this->request->getHeaderLine('Accept')) === -1) {
             $this->sendError('Wrong accepteble formats');
@@ -75,7 +76,7 @@ class PhoProcessor
         $error = $zip->open($this->unpacked . DIRECTORY_SEPARATOR . $this->file . '.zip');
 
         if ($error == true) {
-            $error = $zip->extractTo($_SERVER['DOCUMENT_ROOT'].'/'.$this->unpacked . DIRECTORY_SEPARATOR . $this->file);
+            $error = $zip->extractTo("./".$this->unpacked . DIRECTORY_SEPARATOR . $this->file);
             if ($error != true)
             {
                 $this->sendError('Can not open extract files');
