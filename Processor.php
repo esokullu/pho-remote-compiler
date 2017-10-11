@@ -93,11 +93,23 @@ class PhoProcessor
 
     public function compile()
     {
-        $this->compiler = new Compiler();
+        /*$this->compiler = new Compiler();
         $this->processDir($this->unpacked . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR);
         $this->compiler->save($this->compiled . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR);
 
         return $this->response;
+        */
+        $ret = 0;
+        $output = [];
+        exec("php /opt/pho-cli/bin/pho.php ".
+             escapeshellarg($this->unpacked . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR).
+             " ".
+             escapeshellarg($this->compiled . DIRECTORY_SEPARATOR . $this->file . DIRECTORY_SEPARATOR).
+             " pgql",
+             $output,
+             $ret
+           )
+        return $ret === 0;
     }
 
     public function createZip()
