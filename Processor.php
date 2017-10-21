@@ -147,7 +147,8 @@ class PhoProcessor
     {
         $fs = new Filesystem();
         $fs->remove($this->unpacked . DIRECTORY_SEPARATOR . $this->file);
-        $fs->remove($this->compiled . DIRECTORY_SEPARATOR . $this->file);
+        $fs->remove($this->unpacked . DIRECTORY_SEPARATOR . $this->file.".zip");
+	$fs->remove($this->compiled . DIRECTORY_SEPARATOR . $this->file);
     }
 
 	public function result() {
