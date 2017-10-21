@@ -129,7 +129,7 @@ class PhoProcessor
                 if (!$file->isDir()) {
 
                     $filePath     = $file->getRealPath();
-                    $relativePath = ltrim(str_replace($source, '', $filePath), DIRECTORY_SEPARATOR);
+                    $relativePath = $file->getFilename(); // ltrim(str_replace($source, '', $filePath), DIRECTORY_SEPARATOR);
 
                     $zip->addFile($filePath, $relativePath);
                 }
@@ -149,6 +149,10 @@ class PhoProcessor
         $fs->remove($this->unpacked . DIRECTORY_SEPARATOR . $this->file);
         $fs->remove($this->compiled . DIRECTORY_SEPARATOR . $this->file);
     }
+
+	public function result() {
+return $this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip';
+}
 
     private function sendError(string $message = 'Not Acceptable', int $code = 400)
     {

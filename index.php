@@ -30,11 +30,11 @@ $app->post('/', function (Request $request, Response $response) {
             $response = $processor->createZip();
         }
     }
-    //$processor->clean();
+    $processor->clean();
     //header("Content-Type: application/zip");
     // header("Content-Disposition: attachment; filename=$file_name");
     // header("Content-Length: " . filesize($yourfile));
 
-    return $response;
+    return $response->withJson(["location"=>$processor->result()]);
 });
 $app->run();
