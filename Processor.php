@@ -111,36 +111,48 @@ class PhoProcessor
            );
         return $ret === 0;
     }
+	
+	/**
+	 * source: https://gist.github.com/toddsby/f98d82314259ec5483d8
+	 */
+	private  function zipData($source, $destination) {
+		if (extension_loaded('zip')) {
+			if (file_exists($source)) {
+				$zip = new ZipArchive();
+				if ($zip->open($destination, ZIPARCHIVE::CREATE)) {
+					$source = realpath($source);
+					if (is_dir($source)) {
+						$iterator = new RecursiveDirectoryIterator($source);
+						// skip dot files while iterating 
+						$iterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
+						$files = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+						foreach ($files as $file) {
+							$file = realpath($file);
+							if (is_dir($file)) {
+								$zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
+							} else if (is_file($file)) {
+								$zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
+							}
+						}
+					} else if (is_file($source)) {
+						$zip->addFromString(basename($source), file_get_contents($source));
+					}
+				}
+				return $zip->close();
+			}
+		}
+		return false;
+	}
 
     public function createZip()
     {
-        $zip   = new \ZipArchive;
-        $error = $zip->open($this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip', \ZipArchive::CREATE);
-
-        if ($error === true) {
-            // Create recursive directory iterator
-            $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($this->compiled . DIRECTORY_SEPARATOR . $this->file),
-                \RecursiveIteratorIterator::LEAVES_ONLY
-            );
-
-            foreach ($files as $name => $file) {
-
-                if (!$file->isDir()) {
-
-                    $filePath     = $file->getRealPath();
-                    $relativePath = $file->getFilename(); // ltrim(str_replace($source, '', $filePath), DIRECTORY_SEPARATOR);
-
-                    $zip->addFile($filePath, $relativePath);
-                }
-            }
-        } else {
-            $this->sendError('Can create zip file');
-        }
-
-        // var_dump('created zip = '.$this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip'.(file_exists($this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip') ?'TRUE':"FALSE"));
-        $zip->close();
-        return $this->response;
+		if(!$this->zipData(
+			$this->compiled . DIRECTORY_SEPARATOR . $this->file,
+			$this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip'
+		)) {
+			$this->sendError('Can create zip file');
+		}
+		return $this->response;
     }
 
     public function clean()
