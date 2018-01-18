@@ -63,10 +63,10 @@ class PhoProcessor
         }
         $post = $this->request->getParsedBody();
         if (isset($post['extension'])) {
-            return $this->extension = $post['extension'];
+             $this->extension = $post['extension'];
         }
 			
-		$this->logger->info("A successful request");
+	$this->logger->info("A successful request");
         return $this->response;
     }
 
