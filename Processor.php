@@ -24,9 +24,11 @@ class PhoProcessor
     private $unpacked  = 'unpacked';
     private $compiled  = 'compiled';
     private $zipped    = 'zipped';
+	private $logger;
 
     public function __construct(Request $request, Response $response)
     {
+		$this->logger = new Katzgrau\KLogger\Logger(__DIR__.'/logs');
         $this->request  = $request;
         $this->response = $response;
         $this->file     = 'file_' . time();
@@ -44,26 +46,27 @@ class PhoProcessor
 */
         if (strpos('application/zip', $this->request->getHeaderLine('Accept')) === -1
             || strpos('application/json', $this->request->getHeaderLine('Accept')) === -1) {
-            $this->sendError('Wrong accepteble formats');
+            return $this->sendError('Wrong accepteble formats');
         }
 
         $files = $this->request->getUploadedFiles();
         if (count($files) == 0) {
-            $this->sendError('Server not accept zip file');
+            return $this->sendError('Server not accept zip file');
         }
 
         if (!$files['file'] instanceof \Slim\Http\UploadedFile) {
-            $this->sendError('Wrong file variable');
+            return $this->sendError('Wrong file variable');
         }
 
         if ($files['file']->getClientMediaType() != 'application/zip') {
-            $this->sendError('Sended file are not zip file');
+            return $this->sendError('Sended file are not zip file');
         }
         $post = $this->request->getParsedBody();
         if (isset($post['extension'])) {
-            $this->extension = $post['extension'];
+            return $this->extension = $post['extension'];
         }
-
+			
+		$this->logger->info("A successful request");
         return $this->response;
     }
 
@@ -171,6 +174,7 @@ return $this->zipped . DIRECTORY_SEPARATOR . $this->file . '.zip';
     {
         $this->response = $this->response->withStatus($code);
         $this->response->getBody()->write($message);
+		$this->logger->info("A failed request");
         return $response;
     }
 
